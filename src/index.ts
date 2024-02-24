@@ -39,8 +39,6 @@ const app = new Elysia()
   `;
 	})
 	.get("/game", () => {
-		console.log(renderHTML());
-
 		return renderHTML();
 	})
 	.get("/play/:x/:y", ({ params: { x, y } }) => {
@@ -52,8 +50,25 @@ const app = new Elysia()
 					game[i][j] = 0;
 				}
 			}
-			return `<div>Player ${winner} wins!</div>`;
+			return `<div hx-get="/game">Player ${winner} wins!</div>`;
 		}
+		let tie = true;
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				if (game[i][j] !== 0) {
+					tie = false;
+				}
+			}
+		}
+		if (tie) {
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					game[i][j] = 0;
+				}
+			}
+			return `<div hx-get="/game" >Tie!</div>`;
+		}
+
 		return renderHTML();
 	})
 	.listen(3000);
